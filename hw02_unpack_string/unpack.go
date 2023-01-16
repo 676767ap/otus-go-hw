@@ -10,18 +10,18 @@ import (
 
 var ErrInvalidString = errors.New("invalid string")
 
-func Unpack(InptStr string) (string, error) {
-	first, _ := utf8.DecodeRuneInString(InptStr)
+func Unpack(inptStr string) (string, error) {
+	first, _ := utf8.DecodeRuneInString(inptStr)
 	if unicode.IsDigit(first) {
 		return "", ErrInvalidString
 	}
 	var sliceStr = []string{}
-	ra := []rune(InptStr)
+	ra := []rune(inptStr)
 	for i, r := range ra {
-		if unicode.IsDigit(r) {
-			if unicode.IsDigit(ra[i-1]) {
-				return "", ErrInvalidString
-			}
+		if unicode.IsDigit(r) && unicode.IsDigit(ra[i-1]) {
+			return "", ErrInvalidString
+
+		} else if unicode.IsDigit(r) {
 			var numRunes string
 			curNum, _ := strconv.Atoi(string(r))
 			if curNum != 0 {
