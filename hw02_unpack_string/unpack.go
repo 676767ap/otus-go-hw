@@ -15,7 +15,7 @@ func Unpack(inptStr string) (string, error) {
 	if unicode.IsDigit(first) {
 		return "", ErrInvalidString
 	}
-	var sliceStr = []string{}
+	var sliceStr []string
 	ra := []rune(inptStr)
 	for i, r := range ra {
 		if unicode.IsDigit(r) {
