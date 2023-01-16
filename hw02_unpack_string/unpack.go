@@ -18,17 +18,18 @@ func Unpack(inptStr string) (string, error) {
 	var sliceStr = []string{}
 	ra := []rune(inptStr)
 	for i, r := range ra {
-		if unicode.IsDigit(r) && unicode.IsDigit(ra[i-1]) {
-			return "", ErrInvalidString
-
-		} else if unicode.IsDigit(r) {
+		if unicode.IsDigit(r) {
+			if unicode.IsDigit(ra[i-1]) {
+				return "", ErrInvalidString
+			}
 			var numRunes string
 			curNum, _ := strconv.Atoi(string(r))
 			if curNum != 0 {
 				numRunes = strings.Repeat(string(ra[i-1]), curNum)
 				sliceStr = append(sliceStr, numRunes)
 			}
-		} else {
+		}
+		if !unicode.IsDigit(r) {
 			if i < (len(ra) - 1) {
 				if !unicode.IsDigit(ra[i+1]) {
 					sliceStr = append(sliceStr, string(r))
