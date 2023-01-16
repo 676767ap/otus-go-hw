@@ -28,15 +28,14 @@ func Unpack(inptStr string) (string, error) {
 				numRunes = strings.Repeat(string(ra[i-1]), curNum)
 				sliceStr = append(sliceStr, numRunes)
 			}
+			continue
 		}
-		if !unicode.IsDigit(r) {
-			if i < (len(ra) - 1) {
-				if !unicode.IsDigit(ra[i+1]) {
-					sliceStr = append(sliceStr, string(r))
-				}
-			} else {
+		if i < (len(ra) - 1) {
+			if !unicode.IsDigit(ra[i+1]) {
 				sliceStr = append(sliceStr, string(r))
 			}
+		} else {
+			sliceStr = append(sliceStr, string(r))
 		}
 	}
 	return strings.Join(sliceStr, ""), nil
