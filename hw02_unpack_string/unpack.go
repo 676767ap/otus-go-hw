@@ -15,7 +15,7 @@ func Unpack(inptStr string) (string, error) {
 	if unicode.IsDigit(first) {
 		return "", ErrInvalidString
 	}
-	var sliceStr []string
+	var str strings.Builder
 	ra := []rune(inptStr)
 	for i, r := range ra {
 		if unicode.IsDigit(r) {
@@ -26,17 +26,17 @@ func Unpack(inptStr string) (string, error) {
 			curNum, _ := strconv.Atoi(string(r))
 			if curNum != 0 {
 				numRunes = strings.Repeat(string(ra[i-1]), curNum)
-				sliceStr = append(sliceStr, numRunes)
+				str.WriteString(numRunes)
 			}
 			continue
 		}
 		if i < (len(ra) - 1) {
 			if !unicode.IsDigit(ra[i+1]) {
-				sliceStr = append(sliceStr, string(r))
+				str.WriteRune(r)
 			}
 		} else {
-			sliceStr = append(sliceStr, string(r))
+			str.WriteRune(r)
 		}
 	}
-	return strings.Join(sliceStr, ""), nil
+	return str.String(), nil
 }
