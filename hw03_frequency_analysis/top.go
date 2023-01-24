@@ -18,7 +18,7 @@ func Top10(inptStr string) []string {
 	for _, word := range strSlice {
 		_, exist := dup[word]
 		if exist {
-			dup[word] += 1
+			dup[word]++
 		} else {
 			dup[word] = 1
 		}
