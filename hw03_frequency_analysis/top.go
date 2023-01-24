@@ -14,7 +14,7 @@ func Top10(inptStr string) []string {
 	strSlice := strings.Fields(inptStr)
 	resSlice := make([]string, 0, 10)
 	dup := make(map[string]int)
-	var dupKv []kv
+	dupKv := make([]kv, 0, len(strSlice))
 	for _, word := range strSlice {
 		_, exist := dup[word]
 		if exist {
