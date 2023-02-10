@@ -29,22 +29,25 @@ func Top10(inptStr string) []string {
 	sort.Slice(dupKv, func(i, j int) bool {
 		return dupKv[i].Value > dupKv[j].Value
 	})
-	if len(dupKv) >= 10 {
-		topKv := dupKv[0:10]
-		var lastVal int
-		var curNumCounterPos int
-		for idx, kvTemp := range topKv {
-			if lastVal != kvTemp.Value {
-				sliceKvSort(topKv[curNumCounterPos:idx])
-				curNumCounterPos = idx
-			} else if lastVal == kvTemp.Value && idx == len(topKv)-1 {
-				sliceKvSort(topKv[curNumCounterPos:])
-			}
-			lastVal = kvTemp.Value
+	var topKv []kv
+	if len(dupKv) > 10 {
+		topKv = dupKv[0:10]
+	} else {
+		topKv = dupKv
+	}
+	var lastVal int
+	var curNumCounterPos int
+	for idx, kvTemp := range topKv {
+		if lastVal != kvTemp.Value {
+			sliceKvSort(topKv[curNumCounterPos:idx])
+			curNumCounterPos = idx
+		} else if lastVal == kvTemp.Value && idx == len(topKv)-1 {
+			sliceKvSort(topKv[curNumCounterPos:])
 		}
-		for _, kvt := range topKv {
-			resSlice = append(resSlice, kvt.Key)
-		}
+		lastVal = kvTemp.Value
+	}
+	for _, kvt := range topKv {
+		resSlice = append(resSlice, kvt.Key)
 	}
 	return resSlice
 }
