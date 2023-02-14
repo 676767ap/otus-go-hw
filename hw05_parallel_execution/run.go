@@ -37,7 +37,11 @@ func Run(tasks []Task, n, m int) error {
 
 	close(taskChan)
 	wg.Wait()
-
+	select {
+	case <-quitChan:
+		return ErrErrorsLimitExceeded
+	default:
+	}
 	return nil
 }
 
