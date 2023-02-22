@@ -12,10 +12,15 @@ import (
 var (
 	ErrUnsupportedFile       = errors.New("unsupported file")
 	ErrOffsetExceedsFileSize = errors.New("offset exceeds file size")
+	ErrLimits                = errors.New("incorrect offset or limit value")
 )
 
 func Copy(fromPath, toPath string, offset, limit int64) error {
 	var l int64
+
+	if offset < 0 || limit < 0 {
+		return ErrLimits
+	}
 
 	inFile, err := os.Open(fromPath)
 	if err != nil {
