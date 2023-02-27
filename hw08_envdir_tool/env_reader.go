@@ -25,7 +25,7 @@ func ReadDir(dir string) (Environment, error) {
 
 	envs := make(Environment)
 	for _, file := range files {
-		if file.IsDir() {
+		if file.IsDir() || strings.Contains(file.Name(), "=") {
 			continue
 		}
 
@@ -33,10 +33,9 @@ func ReadDir(dir string) (Environment, error) {
 		if err != nil {
 			return nil, err
 		}
-		if len(envLine) == 0 {
-			envs[file.Name()] = EnvValue{"", true}
-		} else {
-			envs[file.Name()] = EnvValue{envLine, false}
+		envs[file.Name()] = EnvValue{
+			Value:      envLine,
+			NeedRemove: len(envLine) == 0,
 		}
 	}
 	return envs, nil

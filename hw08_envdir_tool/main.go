@@ -11,8 +11,9 @@ func main() {
 
 	env, err := ReadDir(pathEnv)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Read dir error: %v", err)
+		os.Exit(1)
+	} else {
+		os.Exit(RunCmd(cmd, env))
 	}
-
-	RunCmd(cmd, env)
 }
