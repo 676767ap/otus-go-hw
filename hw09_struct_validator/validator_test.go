@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 type UserRole string
@@ -13,11 +15,11 @@ type (
 	User struct {
 		ID     string `json:"id" validate:"len:36"`
 		Name   string
-		Age    int      `validate:"min:18|max:50"`
-		Email  string   `validate:"regexp:^\\w+@\\w+\\.\\w+$"`
-		Role   UserRole `validate:"in:admin,stuff"`
-		Phones []string `validate:"len:11"`
-		meta   json.RawMessage
+		Age    int             `validate:"min:18|max:50"`
+		Email  string          `validate:"regexp:^\\w+@\\w+\\.\\w+$"`
+		Role   UserRole        `validate:"in:admin,stuff"`
+		Phones []string        `validate:"len:11"`
+		meta   json.RawMessage //nolint
 	}
 
 	App struct {
@@ -37,24 +39,44 @@ type (
 )
 
 func TestValidate(t *testing.T) {
+	var ve ValidationErrors
 	tests := []struct {
 		in          interface{}
 		expectedErr error
 	}{
 		{
-			// Place your code here.
+			in:          &User{ID: "123", Name: "Alex", Age: 3, meta: nil},
+			expectedErr: ValidationErrors{ValidationError{Field: "Age", Err: ErrMin}},
 		},
-		// ...
-		// Place your code here.
+		{
+			in:          &User{ID: "1", Name: "Alex", Age: 18},
+			expectedErr: ve,
+		},
+		{
+			in:          &User{ID: "123", Email: "mail@google"},
+			expectedErr: ValidationErrors{ValidationError{Field: "Email", Err: ErrRegExp}},
+		},
+		{
+			in:          &App{Version: "1.2.3.456"},
+			expectedErr: ValidationErrors{ValidationError{Field: "Version", Err: ErrLen}},
+		},
+		{
+			in:          &Response{Code: 307},
+			expectedErr: ValidationErrors{ValidationError{Field: "Code", Err: ErrIn}},
+		},
+		{
+			in:          &Token{Header: []byte{0, 1, 2}},
+			expectedErr: ve,
+		},
 	}
 
 	for i, tt := range tests {
 		t.Run(fmt.Sprintf("case %d", i), func(t *testing.T) {
 			tt := tt
 			t.Parallel()
-
-			// Place your code here.
-			_ = tt
+			if err := Validate(tt.in); err != nil {
+				require.Equal(t, tt.expectedErr, err)
+			}
 		})
 	}
 }
