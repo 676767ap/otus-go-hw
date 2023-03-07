@@ -23,6 +23,7 @@ var (
 	ErrMax      = errors.New("error max")
 	ErrIn       = errors.New("error in")
 	ErrValidate = errors.New("error validate")
+	ErrStruct   = errors.New("error entity is not a structure")
 )
 
 func (ve ValidationErrors) Error() string {
@@ -35,6 +36,9 @@ func (ve ValidationErrors) Error() string {
 
 func Validate(v interface{}) error {
 	t := reflect.ValueOf(v).Elem()
+	if t.Kind() != reflect.Struct {
+		return ErrStruct
+	}
 	typ := t.Type()
 	var ve ValidationErrors
 	for i, f := range reflect.VisibleFields(typ) {
@@ -77,6 +81,15 @@ func containsArray(s []string, val int) (bool, error) {
 	return false, nil
 }
 
+func inArray(s []string, val string) bool {
+	for _, v := range s {
+		if v == val {
+			return true
+		}
+	}
+	return false
+}
+
 func checkArray(s []string, name string) error {
 	if len(s) != 2 {
 		return fmt.Errorf("field %s: %w", name, ErrValidate)
@@ -111,8 +124,11 @@ func validateString(val string, tagValue string, name string) error {
 			} else if !reg.Match([]byte(val)) {
 				ve = append(ve, ValidationError{name, ErrRegExp})
 			}
+		case "in":
+			if ok := inArray(strings.Split(m[1], ","), val); !ok {
+				ve = append(ve, ValidationError{name, ErrIn})
+			}
 		default:
-			ve = append(ve, ValidationError{name, ErrValidate})
 		}
 	}
 	return ve
@@ -149,7 +165,6 @@ func validateInt(val int, tagValue string, name string) error {
 				ve = append(ve, ValidationError{name, ErrIn})
 			}
 		default:
-			ve = append(ve, ValidationError{name, ErrValidate})
 		}
 	}
 	return ve

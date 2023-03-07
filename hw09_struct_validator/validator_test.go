@@ -26,6 +26,10 @@ type (
 		Version string `validate:"len:5"`
 	}
 
+	String struct {
+		Str string `validate:"in:admin,stuff"`
+	}
+
 	Token struct {
 		Header    []byte
 		Payload   []byte
@@ -63,6 +67,10 @@ func TestValidate(t *testing.T) {
 		{
 			in:          &Response{Code: 307},
 			expectedErr: ValidationErrors{ValidationError{Field: "Code", Err: ErrIn}},
+		},
+		{
+			in:          &String{Str: "user"},
+			expectedErr: ValidationErrors{ValidationError{Field: "Str", Err: ErrIn}},
 		},
 		{
 			in:          &Token{Header: []byte{0, 1, 2}},
