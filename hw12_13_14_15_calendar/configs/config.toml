@@ -1,17 +1,13 @@
-[app]
-addr = ":8080"
-
 [logger]
-level = "DEBUG"
+level = "debug" # should be "info", "warn", "info", "error". See logger.go in logger package
 
-[storage]
-type = "sql"
+[db]
+provider = "in-memory" # should be "sql", "in-memory"
+DSN = ""
 
-[storage.database]
-dirMigrate = "migrations"
-dialect = "postgres"
+[http]
 host = "localhost"
-port = 5432
-name = "calendar"
-user = "postgres"
-password = "Qweasd123"
+port = "8089"
+write_timeout = "5s"
+read_timeout = "5s"
+read_header_timeout = "5s"

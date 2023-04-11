@@ -3,61 +3,52 @@ package main
 import (
 	"context"
 	"flag"
-
-	"github.com/676767ap/otus-go-hw/hw12_13_14_15_calendar/internal/config"
-	"github.com/676767ap/otus-go-hw/hw12_13_14_15_calendar/internal/migrate"
-	sqlstorage "github.com/676767ap/otus-go-hw/hw12_13_14_15_calendar/internal/storage/sql"
-
-	"log"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
 	"github.com/676767ap/otus-go-hw/hw12_13_14_15_calendar/internal/app"
-	"github.com/676767ap/otus-go-hw/hw12_13_14_15_calendar/internal/logger"
+	"github.com/676767ap/otus-go-hw/hw12_13_14_15_calendar/internal/config"
+	zapLogger "github.com/676767ap/otus-go-hw/hw12_13_14_15_calendar/internal/logger/zap"
 	internalhttp "github.com/676767ap/otus-go-hw/hw12_13_14_15_calendar/internal/server/http"
-	"github.com/spf13/viper"
+	storageFactory "github.com/676767ap/otus-go-hw/hw12_13_14_15_calendar/internal/storage/factory"
 )
 
+const versionArgKey = "version"
+
+var configFile string
+
+func init() {
+	flag.StringVar(&configFile, "config", "/etc/calendar/config.toml", "Path to configuration file")
+}
+
 func main() {
-	var (
-		configFile = flag.String("config", "/etc/calendar/config.toml", "Path to configuration file")
-	)
 	flag.Parse()
 
-	if flag.Arg(0) == "version" {
+	if flag.Arg(0) == versionArgKey {
 		printVersion()
 		return
 	}
 
-	conf := config.NewConfig()
-	viper.SetConfigFile(*configFile)
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("failed read config file: %v", configFile)
-	}
-	if err := viper.Unmarshal(&conf); err != nil {
-		log.Fatalf("unable to decode into struct, %v", err)
-	}
+	fmt.Println(configFile)
 
-	logg := logger.New(conf.Logger.Level)
-
-	migrator, err := migrate.NewPgMigrate(&conf.Storage.Database)
+	cfg, err := config.NewConfig(configFile)
 	if err != nil {
-		log.Fatal(err)
-	}
-	if err := migrator.Run(); err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
-	store, err := sqlstorage.New(&conf.Storage.Database)
+	logg := zapLogger.New(cfg.Logger.Level)
+
+	storage, err := storageFactory.MakeStorage(cfg)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
-	calendar := app.New(logg, store)
+	calendar := app.New(logg, storage)
 
-	server := internalhttp.NewServer(logg, calendar)
+	server := internalhttp.NewServer(calendar, cfg)
 
 	ctx, cancel := signal.NotifyContext(context.Background(),
 		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
@@ -72,7 +63,6 @@ func main() {
 		if err := server.Stop(ctx); err != nil {
 			logg.Error("failed to stop http server: " + err.Error())
 		}
-		logg.Info("calendar shutdown...")
 	}()
 
 	logg.Info("calendar is running...")
