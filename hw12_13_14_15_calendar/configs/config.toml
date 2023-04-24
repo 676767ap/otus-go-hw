@@ -1,5 +1,13 @@
 [logger]
-level = "INFO"
+level = "debug" # should be "info", "warn", "info", "error". See logger.go in logger package
 
-# TODO
-# ...
+[db]
+provider = "in-memory" # should be "sql", "in-memory"
+DSN = ""
+
+[http]
+host = "localhost"
+port = "8089"
+write_timeout = "5s"
+read_timeout = "5s"
+read_header_timeout = "5s"
