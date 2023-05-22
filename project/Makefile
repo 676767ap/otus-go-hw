@@ -36,6 +36,18 @@ run-img: build-img
 version: build
 	$(APP_BIN) version
 
+tidy:
+	go mod tidy
+	
+fmt:
+	go fmt ./...
+
+prepare_lint:
+	go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.27.0
+
+lint: prepare_lint fmt tidy
+	golangci-lint run ./...
+
 test:
 	go test -race ./internal/...
 

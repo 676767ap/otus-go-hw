@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/gin-contrib/sessions v0.0.5
 	github.com/gin-gonic/gin v1.9.0
+	github.com/golang/mock v1.6.0
 	github.com/ilyakaznacheev/cleanenv v1.4.2
 	github.com/rabbitmq/amqp091-go v1.8.1
 	github.com/swaggo/files v1.0.1

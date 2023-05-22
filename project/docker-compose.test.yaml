@@ -60,7 +60,7 @@ services:
 
   rabbit:
     restart: always
-    image: rabbitmq:3.10.6-management
+    image: rabbitmq:3.11-alpine
     ports:
       - "15672:15672"
       - "5672:5672"

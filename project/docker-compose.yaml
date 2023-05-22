@@ -22,7 +22,7 @@ services:
 
   rabbit:
     restart: always
-    image: rabbitmq:3.10.6-management
+    image: rabbitmq:3.11-alpine
     ports:
       - "15672:15672"
       - "5672:5672"
@@ -40,7 +40,7 @@ services:
       context: /
       dockerfile: docker/banners-rotator.dockerfile
     ports:
-      - "8099:8099"
+      - "8086:8086"
     depends_on:
       - postgres
       - rabbit
