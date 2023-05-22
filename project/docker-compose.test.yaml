@@ -1,0 +1,90 @@
+version: '3.9'
+
+services:
+  postgres:
+    restart: always
+    image: postgres:13.6-alpine
+    environment:
+      PROJECT_DEV_MODE: true
+      PROJECT_STORAGE: 
+      PROJECT_PSQL_USER:
+      PROJECT_PSQL_PASSWORD:
+      PROJECT_PSQL_HOST:
+      PROJECT_PSQL_PORT:
+      PROJECT_PSQL_DATABASE:
+      PROJECT_MAXAGE:
+      PROJECT_COOKIE_NAME:
+      PROJECT_SESSION_KEY:
+      PROJECT_SERVER_ADDRESS:
+      PROJECT_SERVER_PORT:
+      RABBITMQ_PROTOCOL:
+      RABBITMQ_USERNAME:
+      RABBITMQ_PASSWORD:
+      RABBITMQ_HOST:
+      RABBITMQ_PORT:
+      RABBITMQ_EXCHANGE_NAME:
+      RABBITMQ_EXCHANGE_KIND:
+      RABBITMQ_EXCHANGE_DURABLE:
+      RABBITMQ_EXCHANGE_AUTO_DELETE:
+      RABBITMQ_EXCHANGE_INTERNAL:
+      RABBITMQ_EXCHANGE_NO_WAIT:
+      RABBITMQ_QUEUE_NAME:
+      RABBITMQ_QUEUE_KIND:
+      RABBITMQ_QUEUE_DURABLE:
+      RABBITMQ_QUEUE_AUTO_DELETE:
+      RABBITMQ_QUEUE_INTERNAL:
+      RABBITMQ_QUEUE_NO_WAIT:
+      RABBITMQ_QUEUE_BIND_NO_WAIT:
+      RABBITMQ_QUEUE_BINDING_KEY:
+      RABBITMQ_PUBLISH_MANDATORY:
+      RABBITMQ_PUBLISH_IMMEDIATE:
+      RABBITMQ_PUBLISH_ROUTING_KEY:
+      RABBITMQ_CONSUMER_NAME:
+      RABBITMQ_CONSUMER_AUTO_ACK:
+      RABBITMQ_CONSUMER_EXCLUSIVE:
+      RABBITMQ_CONSUMER_NO_LOCAL:
+      RABBITMQ_CONSUMER_NO_WAIT:
+
+    volumes:
+      - /docker/pgdata:/var/lib/postgresql/data:rw
+    ports:
+      - "55432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - test-network
+
+  rabbit:
+    restart: always
+    image: rabbitmq:3.10.6-management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    networks:
+      - test-network
+
+  banners:
+    restart: on-failure
+    build:
+      context: /
+      dockerfile: docker/banners-rotator.dockerfile
+    ports:
+      - "8099:8099"
+    depends_on:
+      - postgres
+      - rabbit
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge

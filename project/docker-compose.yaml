@@ -1,0 +1,52 @@
+version: '3.9'
+
+services:
+  postgres:
+    restart: always
+    image: postgres:13.6-alpine
+    environment:
+      PROJECT_DEV_MODE: false
+
+    volumes:
+      - /docker/pgdata:/var/lib/postgresql/data:rw
+    ports:
+      - "55432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - test-network
+
+  rabbit:
+    restart: always
+    image: rabbitmq:3.10.6-management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    networks:
+      - test-network
+
+  banners:
+    restart: on-failure
+    build:
+      context: /
+      dockerfile: docker/banners-rotator.dockerfile
+    ports:
+      - "8099:8099"
+    depends_on:
+      - postgres
+      - rabbit
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge

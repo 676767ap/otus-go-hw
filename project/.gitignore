@@ -1,0 +1,32 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Go workspace file
+go.work
+
+.history/
+uploads/*
+!kubernetes/app
+tmp.yaml
+build
+.vscode
+.env
+.idea
+
+# Swagger files
+docs/docs.go
+docs/swagger.json
+docs/swagger.yaml
+
+# Temp env vars
+internal/app/config/temp_vals.go
