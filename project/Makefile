@@ -4,9 +4,6 @@ DOCKER_IMG="banners-rotator:develop"
 GIT_HASH := $(shell git log --format="%h" -n 1)
 LDFLAGS := -X main.release="develop" -X main.buildDate=$(shell date -u +%Y-%m-%dT%H:%M:%S) -X main.gitHash=$(GIT_HASH)
 
-up:
-	docker-compose -f docker-compose.yaml up -d --build
-
 down:
 	docker-compose -f docker-compose.yaml down
 
@@ -18,27 +15,18 @@ down:
 # docker-compose -f docker-compose.test.yaml down; \
 # exit $$status_code
 
-build:
+build-local:
 	go build -v -o $(APP_BIN) -ldflags "$(LDFLAGS)" ./cmd
 
-run: build
-	$(APP_BIN)
-
-build-img:
-	docker build \
-		--build-arg=LDFLAGS="$(LDFLAGS)" \
-		-t $(DOCKER_IMG) \
-		-f build/Dockerfile .
-
-run-img: build-img
-	docker run $(DOCKER_IMG)
+run:
+	docker-compose -f docker-compose.yaml up -d --build
 
 version: build
 	$(APP_BIN) version
 
 tidy:
 	go mod tidy
-	
+
 fmt:
 	go fmt ./...
 
