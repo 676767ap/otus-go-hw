@@ -3,38 +3,39 @@ package database
 import (
 	"github.com/676767ap/project/internal/config"
 	"github.com/676767ap/project/internal/entity"
-	"github.com/676767ap/project/util/log"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func ConnectDatabase(cfg *config.Config) *gorm.DB {
+func ConnectDatabase(cfg *config.Config) (*gorm.DB, error) {
 	dsn := "host=" + cfg.PostgreSQL.Host + " user=" + cfg.PostgreSQL.User + " password=" + cfg.PostgreSQL.Password + " dbname=" + cfg.PostgreSQL.Database +
 		" port=" + cfg.PostgreSQL.Port + " sslmode=disable TimeZone=Europe/Moscow"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal("DB Open:", err)
+		return nil, err
 	}
 	migrate(db)
 	if cfg.DevMode {
-		return db.Debug()
+		return db.Debug(), nil
 	}
 
-	return db
+	return db, nil
 }
 
-func CloseDatabase(db *gorm.DB) {
+func CloseDatabase(db *gorm.DB) error {
 	sqlDB, err := db.DB()
 	if err != nil {
-		log.Fatal("DB Shutdown:", err)
+		return err
 	}
 	sqlDB.Close()
+	return nil
 }
 
-func migrate(db *gorm.DB) {
+func migrate(db *gorm.DB) error {
 	err := db.AutoMigrate(&entity.Banner{}, &entity.Slot{}, &entity.SocGroup{}, &entity.Stat{})
 	if err != nil {
-		log.Fatal("DB AutoMigrate:", err)
+		return err
 	}
+	return nil
 }

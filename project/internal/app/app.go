@@ -41,10 +41,13 @@ func NewApp(cfg *config.Config) (App, error) {
 	defer cancel()
 	queue, err := services.NewQueue(ctx, cfg)
 	if err != nil {
-		log.Fatal("Failed to create a queue client: " + err.Error())
+		return App{}, err
 	}
 	defer queue.Close(ctx)
-	db := database.ConnectDatabase(cfg)
+	db, err := database.ConnectDatabase(cfg)
+	if err != nil {
+		return App{}, err
+	}
 	store := gormsessions.NewStore(db, true, []byte(cfg.Session.SessionKey))
 	router := gin.Default()
 	router.Use(sessions.Sessions(cfg.Session.CookieName, store))
@@ -68,11 +71,12 @@ func NewApp(cfg *config.Config) (App, error) {
 	return a, nil
 }
 
-func (a *App) Run() {
+func (a *App) Run() error {
 	err := a.router.Run(a.cfg.GetAddressWithPort())
 	if err != nil {
-		log.Fatal("Server run error:", err)
+		return err
 	}
+	return nil
 }
 
 func (a *App) Stop() {
@@ -85,11 +89,13 @@ func (a *App) Stop() {
 	}
 
 	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatal("Server Shutdown:", err)
+		log.Error("Server Shutdown:", err)
 	}
 	log.Info("Server exiting")
 
-	database.CloseDatabase(a.db)
+	if err := database.CloseDatabase(a.db); err != nil {
+		log.Error("DB Shutdown:", err)
+	}
 }
 
 type ErrorStruct struct {
