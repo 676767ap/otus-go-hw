@@ -15,9 +15,17 @@ import (
 // @Success  200 {string} "" "OK"
 // @Failure  500 {object} ErrorStruct "StatusInternalServerError"
 func (a *App) addBannerToSlot(ctx *gin.Context) {
-	bannerId, _ := strconv.ParseInt(ctx.Param("banner_id"), 10, 32)
-	slotId, _ := strconv.ParseInt(ctx.Param("slot_id"), 10, 32)
-	err := a.rep.AddBannerToSlot(int32(bannerId), int32(slotId))
+	bannerId, err := strconv.ParseInt(ctx.Param("banner_id"), 10, 32)
+	if err != nil {
+		ServeError(ctx, http.StatusInternalServerError, "Ошибка сервера")
+		return
+	}
+	slotId, err := strconv.ParseInt(ctx.Param("slot_id"), 10, 32)
+	if err != nil {
+		ServeError(ctx, http.StatusInternalServerError, "Ошибка сервера")
+		return
+	}
+	err = a.rep.AddBannerToSlot(int32(bannerId), int32(slotId))
 	if err != nil {
 		ServeError(ctx, http.StatusInternalServerError, "Ошибка получения добавления баннера в слот")
 		return
@@ -33,9 +41,17 @@ func (a *App) addBannerToSlot(ctx *gin.Context) {
 // @Success  200 {string} "" "OK"
 // @Failure  500 {object} ErrorStruct "StatusInternalServerError"
 func (a *App) removeBannerFromSlot(ctx *gin.Context) {
-	bannerId, _ := strconv.ParseInt(ctx.Param("banner_id"), 10, 32)
-	slotId, _ := strconv.ParseInt(ctx.Param("slot_id"), 10, 32)
-	err := a.rep.RemoveBannerFromSlot(int32(bannerId), int32(slotId))
+	bannerId, err := strconv.ParseInt(ctx.Param("banner_id"), 10, 32)
+	if err != nil {
+		ServeError(ctx, http.StatusInternalServerError, "Ошибка сервера")
+		return
+	}
+	slotId, err := strconv.ParseInt(ctx.Param("slot_id"), 10, 32)
+	if err != nil {
+		ServeError(ctx, http.StatusInternalServerError, "Ошибка сервера")
+		return
+	}
+	err = a.rep.RemoveBannerFromSlot(int32(bannerId), int32(slotId))
 	if err != nil {
 		ServeError(ctx, http.StatusInternalServerError, "Ошибка удаления баннера из слота")
 		return
@@ -51,9 +67,21 @@ func (a *App) removeBannerFromSlot(ctx *gin.Context) {
 // @Success  200 {string} "" "OK"
 // @Failure  500 {object} ErrorStruct "StatusInternalServerError"
 func (a *App) clickOnBanner(ctx *gin.Context) {
-	bannerId, _ := strconv.ParseInt(ctx.Param("banner_id"), 10, 32)
-	slotId, _ := strconv.ParseInt(ctx.Param("slot_id"), 10, 32)
-	socGroupId, _ := strconv.ParseInt(ctx.Param("soc_group_id"), 10, 32)
+	bannerId, err := strconv.ParseInt(ctx.Param("banner_id"), 10, 32)
+	if err != nil {
+		ServeError(ctx, http.StatusInternalServerError, "Ошибка сервера")
+		return
+	}
+	slotId, err := strconv.ParseInt(ctx.Param("slot_id"), 10, 32)
+	if err != nil {
+		ServeError(ctx, http.StatusInternalServerError, "Ошибка сервера")
+		return
+	}
+	socGroupId, err := strconv.ParseInt(ctx.Param("soc_group_id"), 10, 32)
+	if err != nil {
+		ServeError(ctx, http.StatusInternalServerError, "Ошибка сервера")
+		return
+	}
 	stat, err := a.rep.ClickOnBanner(int32(bannerId), int32(slotId), int32(socGroupId))
 	if err != nil {
 		ServeError(ctx, http.StatusInternalServerError, "Ошибка записи статистики при переходе по беннеру")
@@ -73,8 +101,16 @@ func (a *App) clickOnBanner(ctx *gin.Context) {
 // @Success  200 {integer} 0 "Выбранный баннер"
 // @Failure  500 {object} ErrorStruct "StatusInternalServerError"
 func (a *App) chooseBannerForSlot(ctx *gin.Context) {
-	socGroupId, _ := strconv.ParseInt(ctx.Param("soc_group_id"), 10, 32)
-	slotId, _ := strconv.ParseInt(ctx.Param("slot_id"), 10, 32)
+	socGroupId, err := strconv.ParseInt(ctx.Param("soc_group_id"), 10, 32)
+	if err != nil {
+		ServeError(ctx, http.StatusInternalServerError, "Ошибка сервера")
+		return
+	}
+	slotId, err := strconv.ParseInt(ctx.Param("slot_id"), 10, 32)
+	if err != nil {
+		ServeError(ctx, http.StatusInternalServerError, "Ошибка сервера")
+		return
+	}
 	bannerId, stat, err := a.rep.ChooseBannerForSlot(int32(socGroupId), int32(slotId))
 	if err != nil {
 		ServeError(ctx, http.StatusInternalServerError, "Ошибка выбора баннера для слота")

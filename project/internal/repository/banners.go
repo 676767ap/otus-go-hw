@@ -41,10 +41,7 @@ func (g *GormRepository) RemoveBannerFromSlot(bannerId int32, slotId int32) erro
 	}
 
 	err = g.db.Exec("DELETE FROM banner_slots WHERE banner_id = ? AND slot_id = ?", bannerId, slotId).Error
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (g *GormRepository) ClickOnBanner(bannerId int32, slotId int32, socGroupId int32) (*entity.Stat, error) {
