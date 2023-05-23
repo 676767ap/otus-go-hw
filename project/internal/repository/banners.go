@@ -19,11 +19,7 @@ func (g *GormRepository) AddBannerToSlot(bannerId int32, slotId int32) error {
 	}
 
 	err = g.db.Exec("INSERT INTO banner_slots VALUES (?, ?)", bannerId, slotId).Error
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 func (g *GormRepository) CreateStat(stat *entity.Stat) error {

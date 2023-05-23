@@ -6,9 +6,9 @@ import (
 	"github.com/676767ap/project/util/log"
 )
 
-// @title        nationaleducation.ru
+// @title        banner-rotator
 // @version      0.1
-// @description  Проект "Национальное образование"
+// @description  Проект "Ротация баннеров"
 func main() {
 	cfg := config.LoadConfig()
 

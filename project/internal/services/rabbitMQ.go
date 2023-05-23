@@ -18,7 +18,6 @@ const (
 
 type Exchange interface {
 	DeclareQueue(ctx context.Context, name string) (Queue amqp.Queue, err error)
-	Consume(ctx context.Context, queueName, consumerName string) (<-chan amqp.Delivery, error)
 	Close(ctx context.Context) error
 	SendEvent(ctx context.Context, queue string, event *entity.Stat) error
 }
@@ -51,7 +50,6 @@ type Queue struct {
 	ExchangeSettings  ExchangeSettings
 	QueueSettings     QueueSettings
 	PublisherSettings PublisherSettings
-	ConsumerSettings  ConsumerSettings
 }
 
 func New(conn *amqp.Connection, ch *amqp.Channel) Queue {
@@ -91,18 +89,6 @@ func (q Queue) BindQueue(_ context.Context, queueName, exchangeName string) erro
 		q.QueueSettings.BindingKey,
 		exchangeName,
 		q.QueueSettings.BindNoWait,
-		nil,
-	)
-}
-
-func (q Queue) Consume(_ context.Context, queueName, consumerName string) (<-chan amqp.Delivery, error) {
-	return q.Ch.Consume(
-		queueName,
-		consumerName,
-		q.ConsumerSettings.AutoAck,
-		q.ConsumerSettings.Exclusive,
-		q.ConsumerSettings.NoLocal,
-		q.ConsumerSettings.NoWait,
 		nil,
 	)
 }
@@ -184,12 +170,6 @@ func NewQueue(ctx context.Context, cfg *config.Config) (Exchange, error) {
 		AutoDelete: cfg.RabbitMQ.Exchange.AutoDelete,
 		Internal:   cfg.RabbitMQ.Exchange.Internal,
 		NoWait:     cfg.RabbitMQ.Exchange.NoWait,
-	}
-	rabbit.ConsumerSettings = ConsumerSettings{
-		AutoAck:   cfg.RabbitMQ.Consumer.AutoAck,
-		Exclusive: cfg.RabbitMQ.Consumer.Exclusive,
-		NoLocal:   cfg.RabbitMQ.Consumer.NoLocal,
-		NoWait:    cfg.RabbitMQ.Consumer.NoWait,
 	}
 	if err := rabbit.DeclareExchange(ctx, cfg.RabbitMQ.Exchange.Name); err != nil {
 		return nil, err
