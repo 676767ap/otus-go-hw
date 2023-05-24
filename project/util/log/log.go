@@ -3,7 +3,7 @@ package log
 import (
 	"strings"
 
-	"github.com/676767ap/project/internal/config"
+	"github.com/676767ap/otus-go-hw/project/internal/config"
 
 	"go.uber.org/zap"
 )

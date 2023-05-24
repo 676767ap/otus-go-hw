@@ -1,4 +1,4 @@
-module github.com/676767ap/project
+module github.com/676767ap/otus-go-hw/project
 
 go 1.19
 

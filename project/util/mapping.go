@@ -4,7 +4,7 @@ import (
 	"errors"
 	"reflect"
 
-	"github.com/676767ap/project/util/log"
+	"github.com/676767ap/otus-go-hw/project/util/log"
 )
 
 func MappingStructure(input interface{}, output interface{}) error {

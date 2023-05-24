@@ -7,7 +7,7 @@ package mock_repository
 import (
 	reflect "reflect"
 
-	entity "github.com/676767ap/project/internal/entity"
+	entity "github.com/676767ap/otus-go-hw/project/internal/entity"
 	gomock "github.com/golang/mock/gomock"
 )
 

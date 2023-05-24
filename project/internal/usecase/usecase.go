@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"github.com/676767ap/project/internal/repository"
+	"github.com/676767ap/otus-go-hw/project/internal/repository"
 
 	"gorm.io/gorm"
 )

@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"github.com/676767ap/project/internal/entity"
-	"github.com/676767ap/project/util/log"
+	"github.com/676767ap/otus-go-hw/project/internal/entity"
+	"github.com/676767ap/otus-go-hw/project/util/log"
 )
 
 func (rep *Repos) AddBannerToSlot(bannerId int32, slotId int32) error {

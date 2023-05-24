@@ -6,8 +6,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/676767ap/project/internal/config"
-	"github.com/676767ap/project/internal/entity"
+	"github.com/676767ap/otus-go-hw/project/internal/config"
+	"github.com/676767ap/otus-go-hw/project/internal/entity"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 

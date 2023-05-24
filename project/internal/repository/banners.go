@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"github.com/676767ap/project/internal/entity"
-	"github.com/676767ap/project/internal/services"
+	"github.com/676767ap/otus-go-hw/project/internal/entity"
+	"github.com/676767ap/otus-go-hw/project/internal/services"
 )
 
 func (g *GormRepository) AddBannerToSlot(bannerId int32, slotId int32) error {

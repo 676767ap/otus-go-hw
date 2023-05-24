@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/676767ap/project/internal/app"
-	"github.com/676767ap/project/internal/config"
-	"github.com/676767ap/project/util/log"
+	"github.com/676767ap/otus-go-hw/project/internal/app"
+	"github.com/676767ap/otus-go-hw/project/internal/config"
+	"github.com/676767ap/otus-go-hw/project/util/log"
 )
 
 // @title        banner-rotator

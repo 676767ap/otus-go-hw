@@ -1,6 +1,6 @@
 package repository
 
-import "github.com/676767ap/project/internal/entity"
+import "github.com/676767ap/otus-go-hw/project/internal/entity"
 
 type BannerRepository interface {
 	AddBannerToSlot(bannerId int32, slotId int32) error

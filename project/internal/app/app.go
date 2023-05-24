@@ -7,11 +7,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/676767ap/project/infrastructure/database"
-	"github.com/676767ap/project/internal/config"
-	"github.com/676767ap/project/internal/services"
-	"github.com/676767ap/project/internal/usecase"
-	"github.com/676767ap/project/util/log"
+	"github.com/676767ap/otus-go-hw/project/infrastructure/database"
+	"github.com/676767ap/otus-go-hw/project/internal/config"
+	"github.com/676767ap/otus-go-hw/project/internal/services"
+	"github.com/676767ap/otus-go-hw/project/internal/usecase"
+	"github.com/676767ap/otus-go-hw/project/util/log"
 	"gorm.io/gorm"
 
 	"github.com/gin-contrib/sessions"
